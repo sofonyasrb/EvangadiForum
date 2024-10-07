@@ -3,7 +3,8 @@ import React from "react";
 // import Login from "./pages/Login";
 // import Register from "./pages/Register";
 // import { Route,Routes } from "react-router-dom";
-import Footer from "./components/footer/Footer";
+// import Footer from "./components/footer/Footer";
+import Login from "./components/Login/Login"
 
 function App() {
   return (
@@ -14,7 +15,8 @@ function App() {
         <Route path="/register" element={<Register />} />
         
       </Routes> */}
-      <Footer/>
+      <Login/>
+      {/* <Footer/> */}
     </div>
   );
 }
