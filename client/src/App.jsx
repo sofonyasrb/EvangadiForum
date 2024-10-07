@@ -1,21 +1,43 @@
-import React from "react";
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import QuestionAndAnswerPage from './Pages/QuestionAndAnswerPage/QuestionAndAnswerPage.jsx';
+// import QuestionsPage from './Pages/QuestionPage/QuestionPage.jsx';
+ // Import the questions page
 
-function App() {
-  return (
-    <div>
-      Hey Group 1
-      <br />
-      don not forget to create your own branch .<br />
-      becareful on your folder structure .<br />
-      before you commit check the syntax is correct and free from error . <br />
-      you can reach out to me if you have any problem .
-      <br />
-      <br />
-      Ephraim Debel
-      <h1>Welcome to first pull request</h1>
-      <h1>wellcome to second pull request</h1>
-    </div>
+//  const App = () => {
+//   return (
+//     <Router>
+//       <div style={{ marginLeft: '20%', marginRight: '20%' }}>
+//         <Routes>
+          {/* Route to show the list of questions */}
+          {/* <Route path="/" element={<QuestionsPage />} /> */}
+          {/* <Route path="/questions" element={<QuestionsPage />} /> */}
+
+          {/* Dynamic route to show a specific question and its answers */}
+          {/* <Route path="/question/:id" element={<QuestionAndAnswerPage />} />
+        </Routes>
+      </div>
+    </Router>
   );
-}
+};
+
+export default App; */}
+
+const App = () => {
+  return (
+    <Router>
+      <div style={{ marginLeft: '20%', marginRight: '20%' }}>
+        <Routes>
+          <Route path="/" element={<QuestionAndAnswerPage />} />
+        
+        </Routes>
+      </div>
+    </Router>
+  );
+};
 
 export default App;
+
+  {/* <Route path="/questions" element={<QuestionAndAnswerPage />} /> 
+           <Route path="/question/:id" element={<QuestionAndAnswerPage} />
+           <Route path="/question" element={<QuestionAnswerPage />} /> */}
