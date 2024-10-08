@@ -7,6 +7,10 @@ function App() {
    <AskQuestion/>
     </>
   );
-}
+};
 
 export default App;
+
+  {/* <Route path="/questions" element={<QuestionAndAnswerPage />} /> 
+           <Route path="/question/:id" element={<QuestionAndAnswerPage} />
+           <Route path="/question" element={<QuestionAnswerPage />} /> */}
