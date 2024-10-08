@@ -1,38 +1,11 @@
-import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import QuestionAndAnswerPage from './Pages/QuestionAndAnswerPage/QuestionAndAnswerPage.jsx';
-// import QuestionsPage from './Pages/QuestionPage/QuestionPage.jsx';
- // Import the questions page
+import React from "react";
+import AskQuestion from "./components/AskQuestion/AskQuestion";
 
-//  const App = () => {
-//   return (
-//     <Router>
-//       <div style={{ marginLeft: '20%', marginRight: '20%' }}>
-//         <Routes>
-          {/* Route to show the list of questions */}
-          {/* <Route path="/" element={<QuestionsPage />} /> */}
-          {/* <Route path="/questions" element={<QuestionsPage />} /> */}
-
-          {/* Dynamic route to show a specific question and its answers */}
-          {/* <Route path="/question/:id" element={<QuestionAndAnswerPage />} />
-        </Routes>
-      </div>
-    </Router>
-  );
-};
-
-export default App; */}
-
-const App = () => {
+function App() {
   return (
-    <Router>
-      <div style={{ marginLeft: '20%', marginRight: '20%' }}>
-        <Routes>
-          <Route path="/" element={<QuestionAndAnswerPage />} />
-        
-        </Routes>
-      </div>
-    </Router>
+    <>
+   <AskQuestion/>
+    </>
   );
 };
 
