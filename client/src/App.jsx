@@ -1,24 +1,43 @@
-import React from "react";
-// import Home from "./pages/Home";
-// import Login from "./pages/Login";
-// import Register from "./pages/Register";
-// import { Route,Routes } from "react-router-dom";
-// import Footer from "./components/footer/Footer";
-import Login from "./components/Login/Login"
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import QuestionAndAnswerPage from './Pages/QuestionAndAnswerPage/QuestionAndAnswerPage.jsx';
+// import QuestionsPage from './Pages/QuestionPage/QuestionPage.jsx';
+ // Import the questions page
 
-function App() {
-  return (
-    <div>
-      {/* <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
-        
-      </Routes> */}
-      <Login/>
-      {/* <Footer/> */}
-    </div>
+//  const App = () => {
+//   return (
+//     <Router>
+//       <div style={{ marginLeft: '20%', marginRight: '20%' }}>
+//         <Routes>
+          {/* Route to show the list of questions */}
+          {/* <Route path="/" element={<QuestionsPage />} /> */}
+          {/* <Route path="/questions" element={<QuestionsPage />} /> */}
+
+          {/* Dynamic route to show a specific question and its answers */}
+          {/* <Route path="/question/:id" element={<QuestionAndAnswerPage />} />
+        </Routes>
+      </div>
+    </Router>
   );
-}
+};
+
+export default App; */}
+
+const App = () => {
+  return (
+    <Router>
+      <div style={{ marginLeft: '20%', marginRight: '20%' }}>
+        <Routes>
+          <Route path="/" element={<QuestionAndAnswerPage />} />
+        
+        </Routes>
+      </div>
+    </Router>
+  );
+};
 
 export default App;
+
+  {/* <Route path="/questions" element={<QuestionAndAnswerPage />} /> 
+           <Route path="/question/:id" element={<QuestionAndAnswerPage} />
+           <Route path="/question" element={<QuestionAnswerPage />} /> */}
