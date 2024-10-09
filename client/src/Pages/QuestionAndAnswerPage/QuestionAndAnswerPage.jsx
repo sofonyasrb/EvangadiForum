@@ -14,33 +14,49 @@ const QuestionAndAnswerPage = () => {
   const [newAnswer, setNewAnswer] = useState('');
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [data, setData] = useState({});
+
 
   useEffect(() => {
-    const fetchQuestionAndAnswers = async () => {
+    // const fetchQuestionAndAnswers = async () => {
+    //   try {
+    //     console.log('Fetching question and answers...');
+    //     const response = await axios.get(`http://localhost:5500/api/questions/${109}`); // Ensure the API endpoint is correct
+    //     console.log("here",response.data);
+    //     setQuestionTitle(response.data.question.title);
+    //     setQuestionDescription(response.data.question.description);
+    //     setAnswers(response.data.answers);
+    //     setIsLoading(false);
+    //   } catch (error) {
+    //     console.error('Error fetching data:', error);
+    //     setError('Failed to fetch data. Please try again.');
+    //     setIsLoading(false);
+    //   }
+    // };
+
+    // fetchQuestionAndAnswers();
+
+    async function fetchData() {
       try {
-        console.log('Fetching question and answers...');
-        const response = await axios.get(`your-api-url/${id}`); // Replace with your actual API URL and include id
-        // console.log('Fetched data:', response.data);
-        setQuestionTitle(response.data.question.title);
-        setQuestionDescription(response.data.question.description);
-        setAnswers(response.data.answers);
+        const response = await axios.get(`http://localhost:5500/api/questions/questions/109`);
+        console.log(response?.data[0]);
+        setData(response?.data[0]);
         setIsLoading(false);
-      } catch (error) {
-        console.error('Error fetching data:', error);
-        setError('Failed to fetch data. Please try again.');
+      } catch (err) {
+        console.log("Error: ", err);
         setIsLoading(false);
+        setError("Failed to fetch data. Please try again.");
       }
-    };
-
-    fetchQuestionAndAnswers();
-  }, [id]);
-
+    }
+    fetchData();
+  }, []);
+// console.log("data ",data)
   const submitAnswer = async (e) => {
     e.preventDefault();
     if (newAnswer.trim()) {
       try {
         const answerData = { answer: newAnswer, username: 'YourUsername' }; // Replace with actual username
-        const response = await axios.post(`/api/questions/${id}/answers`, answerData); // Replace with actual API
+        const response = await axios.post(`/api/questions/${id}/answers`, answerData); // Ensure the API endpoint is correct
         const postedAnswer = response.data;
         setAnswers((prevAnswers) => [...prevAnswers, postedAnswer]);
         setNewAnswer('');
@@ -52,65 +68,66 @@ const QuestionAndAnswerPage = () => {
 
   return (
     <div className={styles['qa-page']}>
-      <h1>Question</h1>
-      <section className="post-question">
+      {/* Question Header Section */}
+      <h1>Question</h1> 
+      {/* Question Section */}
+      <section className={styles['post-question']}>
         {isLoading ? (
-          <p>Loading question...</p>
+          <p className={styles['loading']}>Loading question...</p>
         ) : error ? (
-          <p>{error}</p>
+          <p className={styles['error']}>{error}</p>
         ) : (
           <>
-            <h2>{questionTitle}</h2>
-            <p>{questionDescription}</p>
+            <h1 className={styles['question-title']}>{data && data?.title}</h1>
+            <p className={styles['question-description']}>{data && data?.description}</p>
           </>
         )}
       </section>
 
-      <section className="community-answers">
-        <hr />
-        <h2 className={`${styles['section-title']}`}>Answers From The Community</h2>
-        <hr />
+      {/* Community Answers Section */}
+      <section className={styles['community-answers']}>
+        <h2 className={styles['section-title']}>Answers From The Community</h2>
         {answers && answers.length > 0 ? (
           answers.map((answer, index) => (
-            <div key={index} className={`${styles['answer']}`}>
-              <div className={`${styles['answer-header']}`}>
-                <div className={`${styles['icon-and-name']}`}>
-                  <FaCircleUser className={`${styles['answer-icon']}`} size={50} />
-                  <div>
-                    <strong>{answer.username}</strong>
-                  </div>
+            <div key={index} className={styles['answer']}>
+              <div className={styles['answer-header']}>
+                <div className={styles['icon-and-name']}>
+                  <FaCircleUser className={styles['answer-icon']} size={50} />
+                  <span className={styles['username']}>{answer.username}</span>
                 </div>
-                <div className={`${styles['answer-body']}`}>
+                <div className={styles['answer-body']}>
                   <p>{answer.body}</p>
                 </div>
               </div>
             </div>
           ))
         ) : (
-          <p>No answers yet. Be the first to answer!</p>
+          <p className={styles['no-answers']}>No answers yet. Be the first to answer!</p>
         )}
       </section>
 
-      <section className="post-answer">
-        <div className={`${styles['heading-container']}`}>
-          <h2 className={`${styles['section-title']}`}>Answer The Top Question</h2>
+      {/* Post Answer Section */}
+      <section className={styles['post-answer']}>
+        <div className={styles['heading-container']}>
+          <h2 className={styles['section-title']}>Answer The Top Question</h2>
         </div>
-        <div className={`${styles['center-button-container']}`}>
-          <button className={`${styles['go-to-question-button']}`} onClick={() => navigate('/questions')}>
+        <div className={styles['center-button-container']}>
+          <button className={styles['go-to-question-button']} onClick={() => navigate('/questions')}>
             Go to Question Page
           </button>
         </div>
 
-        <form onSubmit={submitAnswer}>
-        <textarea
-  className={`${styles['post-answer-textarea']}`} // Ensure this class matches your CSS
-  value={newAnswer}
-  onChange={(e) => setNewAnswer(e.target.value)}
-  placeholder="Type your answer here..."
-  required
-/>
-          <div className={`${styles['Post-Your-Answer']}`}>
-            <button type="submit">Post Your Answer</button>
+        <form className={styles['answer-form']} onSubmit={submitAnswer}>
+          <textarea
+            className={styles['post-answer-textarea']}
+            value={newAnswer}
+            onChange={(e) => setNewAnswer(e.target.value)}
+            placeholder="Type your answer here..."
+            required
+          />
+          {error && <p className={styles['error']}>{error}</p>}
+          <div className={styles['submit-button-container']}>
+            <button type="submit" className={styles['submit-button']}>Post Your Answer</button>
           </div>
         </form>
       </section>
