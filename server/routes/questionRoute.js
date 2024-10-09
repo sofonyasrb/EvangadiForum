@@ -1,5 +1,5 @@
 
-const db = require("../db/dbConfig");
+const dbConnection = require("../db/dbConfig");
 const express = require("express");
 const router = express.Router();
 
@@ -7,8 +7,8 @@ const router = express.Router();
 const submitQuestion = async (req, res) => {
   try {
     const { title, description, questionid, userid } = req.body;
-
-    const newQuestion = await db.query(
+// console.log(req.body)
+    const newQuestion = await dbConnection.query(
       "INSERT INTO questions (title, description, questionid, userid) VALUES (?, ?, ?, ?)",
       [title, description, questionid, userid]
     );
@@ -18,10 +18,11 @@ const submitQuestion = async (req, res) => {
   }
 };
 
+
 // Function to get all questions
 const getAllQuestions = async (req, res) => {
   try {
-    const questions = await db.query("SELECT * FROM questions");
+    const questions = await dbConnection.query("SELECT * FROM questions");
     res.json(questions);
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -32,7 +33,7 @@ const getAllQuestions = async (req, res) => {
 const getSingleQuestion = async (req, res) => {
   try {
     const id = req.params.id;
-    const question = await db.query("SELECT * FROM questions WHERE id = ?", [
+    const question = await dbConnection.query("SELECT * FROM questions WHERE questionid = ?", [
       id,
     ]);
     if (question.length === 0) {
@@ -46,7 +47,7 @@ const getSingleQuestion = async (req, res) => {
 };
 
 // Route to submit a question
-router.post("/question", submitQuestion);
+router.post("/askquestion", submitQuestion);
 
 // Route to get all questions
 router.get("/getallquestions", getAllQuestions);
