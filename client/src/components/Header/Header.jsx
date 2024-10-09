@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import classes from "./Header.module.css";
+import "./Header.css";
 
 function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -9,10 +9,10 @@ function Header() {
   };
 
   return (
-    <header className={classes.outer - container}>
+    <header className="outer-container">
       {/* Logo */}
-      <div className={classes.inner - container}>
-        <div className={classes.logo - container}>
+      <div className="inner-container">
+        <div className="logo-container">
           <a href="/">
             <img
               src="https://66cf6e20751318039e6352ff--peaceful-dragon-75676e.netlify.app/assets/evangadi-logo-home-D98Zk6nH.png"
@@ -23,7 +23,7 @@ function Header() {
         <div>
           {/* Toggle Button with Hamburger Icon */}
           <button
-            className={classes.menu - toggle}
+            className="menu-toggle"
             onClick={toggleMenu}
             aria-label="Toggle menu"
           >
@@ -33,18 +33,18 @@ function Header() {
           {/* Navigation */}
 
           <nav className={`nav-container ${isMenuOpen ? "open" : ""}`}>
-            <ul className={classes.nav - list}>
+            <ul className="nav-list">
               <li>
                 <a href="/">Home</a>
               </li>
-              <li className={classes.divider} />
+              <li className="divider" />
               <li>
                 <a href="/how-it-works">How it Works</a>
               </li>
-              <li className={classes.divider} />
+              <li className="divider" />
             </ul>
             <div>
-              <button className={classes.button - container}>SIGN IN</button>
+              <button className="button-container">SIGN IN</button>
             </div>
           </nav>
         </div>
