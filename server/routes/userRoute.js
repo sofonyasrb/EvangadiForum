@@ -56,20 +56,21 @@
 // module.exports = {register, login, checkuser}
 
 const express = require("express");
-const Router = express.Router();
+const router = express.Router();
 const dbConnection = require("../db/dbConfig");
 const bcrypt = require('bcrypt');
 const { StatusCodes } = require('http-status-codes');
 
 // Register route
-Router.post('/register', register);
+router.post('/register', register);
 
 // Controller
 async function register(req, res) {
-  const { username, firstnamee, lastname, email, password } = req.body;
-  
+  const { username, firstname, lastname, email, password } = req.body;
+  // console.log(req.body)
   // Ensure all fields are provided
-  if (!email || !password || !firstnamee || !lastname || !username) {
+  if (!email || !password || !firstname || !lastname || !username) {
+    console.log("here")
     return res.status(400).json({ message: 'All fields are required' });
   }
 
@@ -81,6 +82,8 @@ async function register(req, res) {
     );
 
     if (user && user.length > 0) {
+      console.log("here2")
+
       return res.status(StatusCodes.BAD_REQUEST).json({ message: 'Email or username already registered' });
     }
 
@@ -95,8 +98,8 @@ async function register(req, res) {
 
     // Insert new user into the database
     await dbConnection.query(
-      "INSERT INTO users (username, firstnamee, lastname, email, password) VALUES (?, ?, ?, ?, ?)",
-      [username, firstnamee, lastname, email, hashedPassword]
+      "INSERT INTO users (username, firstname, lastname, email, password) VALUES (?, ?, ?, ?, ?)",
+      [username, firstname, lastname, email, hashedPassword]
     );
 
     return res.status(StatusCodes.CREATED).json({ message: 'User created successfully' });
@@ -107,5 +110,5 @@ async function register(req, res) {
 }
 
 // Export the router and controller functions
-module.exports = Router;
+module.exports = router;
 // module.exports = { register }; // Combine exports

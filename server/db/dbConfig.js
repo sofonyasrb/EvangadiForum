@@ -1,15 +1,16 @@
-const mysql2 =require("mysql2");
-
-const dbConnection =mysql2.createPool({
-    user: "myDBuser",
-    database: "evangadi-db",
+const mysql2 = require("mysql2")
+const dbConnection = mysql2.createPool({
+    user: process.env.USER,
+    database: process.env.DATABASE,
     host: "localhost",
-    password: "123456",
-    connectionLimit:10
+    password: process.env.PASSWORD,
+    connectionLimit:10,
 })
 
-
-
-
+console.log(process.env.DATABASE)
+// dbConnection.execute("select 'tset' ", (err, result) => {
+//     if(err) throw err
+//     console.log(result)
+// })
 
 module.exports = dbConnection.promise()
