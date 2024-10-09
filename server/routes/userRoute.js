@@ -86,7 +86,7 @@ async function register(req, res) {
 
     // Check if the password length is valid
     if (password.length < 8) {
-      return res.status(StatusCodes.BAD_REQUEST).json({ message: 'Password must be at least 8 characters' });
+      return res.status(StatusCodes.BAD_REQUEST).json({ message: 'Password must be at least 7 characters' });
     }
 
     // Encrypt the password
