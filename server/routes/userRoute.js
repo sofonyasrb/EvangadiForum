@@ -1,68 +1,24 @@
-// const express = require("express");
-// const Router = express.Router ()
-// const dbConnection = require("../db/dbConfig")
-// // const userController = require('../controllers/userController');
-// const bcrypt = require('bcrypt')
-// const {StatusCodes} = require('http-status-codes')
 
-// //register route
-// Router.post ('/register', register);
-
-// // //login route
-// // Router.post ('/login', login);
-
-// // //logout route
-// // Router.get ('/logout', logout);
-
-// //controller
-// async function register (req, res) {
-//  const{username, firstname, lastname, email, password} = req.body;
-//  if (!email || !password || !firstname || !lastname || !username ) {
-//     return res.status(400).json({message: 'please provide all fields are required'})
-    
-// }
-// try {
-//     const [user] = await dbConnection.query("select username, userid from users where username = ? or email = ?  ", [username, email])
-//     res.json({user: user});
-//     if (user.length > 0) {
-//         return res.status(StatusCodes.BAD_REQUEST).json({message: 'email already registered'})
-//     }
-//     if (password.length < 8) {
-//         return res.status(StatusCodes.BAD_REQUEST).json({message: 'password must be at least 8 characters'})
-
-//         // encrypt the password
-//         const salt = await bcrypt.genSalt(10)
-
-//         const hashedPassword = await bcrypt.hash(password,salt)
-
-//     await dbConnection.query("INSERT INTO users (username, firstname, lastname, email, password) VALUES (?, ?, ?, ?, ?)", [username, firstname, lastname, email, hashedPassword]);
-//     return res.status(StatusCodes.CREATED).json({message: 'user created '})
-
-// }catch (error) {
-//     console.log(error.message)
-//     return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({message: "something went wrong, try again later"})
-//    }
-// }
-
-// // function login (req, res) {
-// //     res.send('login')
-    
-// // }   
-
-// // function logout (req, res) {
-// //     res.send('check use')
-// // }
-// module.exports = Router,
-// module.exports = {register, login, checkuser}
 
 const express = require("express");
 const router = express.Router();
 const dbConnection = require("../db/dbConfig");
 const bcrypt = require('bcrypt');
 const { StatusCodes } = require('http-status-codes');
+const {login, checkUser} = require('../controller/usercontroller');
+const authMiddleware = require('../middleware/authMiddleware');  
+
 
 // Register route
 router.post('/register', register);
+
+//login
+router.post("/login",login)
+ 
+    //check user
+
+router.get("/check",authMiddleware, checkUser)
+ 
 
 // Controller
 async function register(req, res) {
@@ -112,3 +68,4 @@ async function register(req, res) {
 // Export the router and controller functions
 module.exports = router;
 // module.exports = { register }; // Combine exports
+

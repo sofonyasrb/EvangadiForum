@@ -1,9 +1,13 @@
 import React from "react";
 import classes from "./HomePage.module.css";
-import { FaRegCircleUser } from "react-icons/fa6";
+// import { FaRegCircleUser } from "react-icons/fa6";
+import { FaUserCircle } from "react-icons/fa";
 import { FaAngleRight } from "react-icons/fa6";
+import { Link } from "react-router-dom";
+function QuestionsInfo({ username, title,questionid }) {
 
-function QuestionsInfo({ userName, questions }) {
+  const path = `/QuestionDetail/${questionid}`
+  // console.log(path)
   return (
     <>
       <div className={classes.questions_container}>
@@ -11,22 +15,27 @@ function QuestionsInfo({ userName, questions }) {
         <div className={classes.ask_question}>
           <div className={classes.ask_user_info}>
             <div className={classes.ask_user}>
-              <FaRegCircleUser
+              <Link to={path}>
+              <FaUserCircle 
+
                 className={classes.icon}
                 // style={{ color: "gray" }}
-                size={35}
+                size={65}
               />
-              <span>{userName}</span>
+              </Link>
+              <span>{username}</span>
             </div>
             <div className={classes.ask_question_text}>
               {/* <input type="text" placeholder="Ask Question" /> */}
-              <p>{questions}</p>
+              <p>{title}</p>
             </div>
           </div>
           {}
 
-          <div>
-            <FaAngleRight />
+          <div className={classes.ask_arrow}>
+            <Link to={path}>
+            <FaAngleRight size={25} className={classes.icon}/>
+            </Link>
           </div>
         </div>
 

@@ -1,104 +1,11 @@
-// import { useState } from "react";
-// import "./Login.css";
+// src/components/Login/Auth.jsx
 
-// const Login = () => {
-//   const [username, setUsername] = useState("");
-//   const [password, setPassword] = useState("");
-//   const [message, setMessage] = useState("");
-
-//   const handleSubmit = (event) => {
-//     event.preventDefault();
-
-//     if (username === "user" && password === "pass") {
-//       alert("Login successful!");
-//     } else {
-//       setMessage("Invalid username or password.");
-//     }
-//   };
-
-//   async function handlesubmit(e) {
-//     e.preventDefualt();
-//     try {
-//       await axios.post("/users/Signup", {
-//         username: UsernameVlaue,
-//         password: PassValue,
-//       });
-//     } catch (error) {
-//       console(error.response);
-//     }
-//   }
-
-//   return (
-//     <div className="login-page">
-//     <div className="outer-container">
-//       <div className="login-container">
-//         <h2>Login to your account</h2>
-//         <div className="new-account">
-//           Don't have an account?<a href="/">create a new account</a>
-//         </div>
-//         <form onSubmit={handleSubmit}>
-//           <input
-//             type="text"
-//             id="username"
-//             placeholder="Username"
-//             value={username}
-//             onChange={(e) => setUsername(e.target.value)}
-//             required
-//           />
-//           <input
-//             className="password-container"
-//             type="password"
-//             id="password"
-//             placeholder="Password"
-//             value={password}
-//             onChange={(e) => setPassword(e.target.value)}
-//             required
-//           />
-//           <a href="/">
-//             <button className="login-button" type="submit">
-//               login
-//             </button>
-//           </a>
-//         </form>
-//         {message && <p style={{ color: "red" }}>{message}</p>}
-
-//         <div className="New-account-2">
-//           <a href="/">Create an account?</a>
-//         </div>
-//       </div>
-//       <div className="p-container">
-//         <a href="/">About</a>
-//         <h1>Evangadi Networks Q&A</h1>
-//         <div>
-//           <p>
-//             No matter what stage of life you are in, whether you’re just
-//             starting elementary school or being promoted to CEO of a Fortune 500
-//             company, you have much to offer to those who are trying to follow in
-//             your footsteps.!
-//           </p>
-//           <p>
-//             Wheather you are willing to share your knowledge or you are just
-//             looking to meet mentors of your own, please start by joining the
-//             network here.
-//           </p>
-//           <a href="/">
-//             {" "}
-//             <button className="last-button">How it works</button>
-//           </a>
-//         </div>
-//       </div>
-//     </div>
-//     </div>
-//   );
-// };
-
-// export default Login;
-
-import { useState } from "react";
-// import axios from "../../utilitis/AxiosConfig";
-import axios from "axios";
+import React, { useState, useContext } from "react";
+import axios from "../../Api/axios";
 import "./Login.css";
-import { useNavigate } from "react-router-dom"; // Ensure react-router-dom is installed
+import { useNavigate } from "react-router-dom";
+import { AppState } from "../../App"; // Assuming you have a context for auth state
+import { toast } from "react-toastify"; // Import toast
 
 const Auth = () => {
   const [isLogin, setIsLogin] = useState(true); // Tracks current form (Login or Signup)
@@ -109,11 +16,16 @@ const Auth = () => {
     firstName: "",
     lastName: "",
   });
-  const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
 
   const navigate = useNavigate();
+  const { setUser } = useContext(AppState); // Access setUser if needed
+
+  // RegEx Patterns
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; // Email should follow basic format
+  const passwordRegex = /^.{8,}$/; // At least 8 characters
+  const usernameRegex = /^[a-zA-Z0-9_-]{3,20}$/; // 3-20 characters long, only letters, numbers, underscore, and hyphen
 
   // Handle input changes for all form fields
   const handleInputChange = (e) => {
@@ -125,56 +37,74 @@ const Auth = () => {
   const handleSubmit = async (event) => {
     event.preventDefault();
     setLoading(true);
-    setMessage("");
 
-    // Basic validation
-    if (!formData.username || !formData.password) {
-      setMessage("Username and password are required.");
+    // Frontend Validation
+    const { username, password, email, firstName, lastName } = formData;
+
+    // Validate Email and Password for both Login and Signup
+    if (!email || !password) {
+      toast.error("Email and password are required.");
+      setLoading(false);
+      return;
+    }
+
+    if (!emailRegex.test(email)) {
+      toast.error("Please enter a valid email address.");
+      setLoading(false);
+      return;
+    }
+
+    if (!passwordRegex.test(password)) {
+      toast.error("Password must be at least 8 characters long.");
       setLoading(false);
       return;
     }
 
     if (!isLogin) {
       // Additional validation for Signup
-      if (!formData.email) {
-        setMessage("Email is required for signup.");
+      if (!firstName || !lastName) {
+        toast.error("First name and last name are required for signup.");
         setLoading(false);
         return;
       }
-      if (!formData.firstName || !formData.lastName) {
-        setMessage("First name and last name are required for signup.");
+
+      if (!usernameRegex.test(username)) {
+        toast.error(
+          "Username must be 3-20 characters long and can include letters, numbers, underscores, and hyphens."
+        );
         setLoading(false);
         return;
       }
-      // You can add more robust validation here (e.g., email format, password strength)
     }
 
     try {
       if (isLogin) {
         // Login Logic
-        const response = await axios.post("/api/login", {
-          email: formData.email,
-          password: formData.password,
+        const response = await axios.post("/users/login", {
+          email,
+          password,
         });
 
         if (response.status === 200) {
-          alert("Login successful!");
-          // Redirect or perform other actions upon successful login
-          navigate("/dashboard"); // Example redirection
+          toast.success("Login successful!");
+          localStorage.setItem("token", response.data.token);
+          localStorage.setItem("username", response.data.username);
+          localStorage.setItem("userid", response.data.userid);
+          setUser(response.data); // Update user context if necessary
+          navigate("/"); // Redirect to home after a short delay to allow toast to show
         }
       } else {
         // Signup Logic
-        console.log("data",formData)
-        const response = await axios.post("http://localhost:5500/api/users/register", {
-          username: formData.username,
-          firstname: formData.firstName,
-          lastname: formData.lastName,
-          email: formData.email,
-          password: formData.password,
+        const response = await axios.post("/users/register", {
+          username,
+          firstname: firstName,
+          lastname: lastName,
+          email,
+          password,
         });
-        console.log(response.status)
+
         if (response.status === 201) {
-          alert("Signup successful! You can now log in.");
+          toast.success("Signup successful! You can now log in.");
           setIsLogin(true); // Switch to Login form after successful signup
           setFormData({
             username: "",
@@ -187,14 +117,10 @@ const Auth = () => {
       }
     } catch (error) {
       console.error(error);
-      if (
-        error.response &&
-        error.response.data &&
-        error.response.data.message
-      ) {
-        setMessage(error.response.data.message);
+      if (error.response && error.response.data && error.response.data.message) {
+        toast.error(error.response.data.message);
       } else {
-        setMessage("An error occurred. Please try again.");
+        toast.error("An error occurred. Please try again.");
       }
     } finally {
       setLoading(false);
@@ -204,13 +130,12 @@ const Auth = () => {
   // Toggle between Login and Signup forms
   const toggleForm = () => {
     setIsLogin(!isLogin);
-    setMessage(""); // Clear any existing messages
     setFormData({
       username: "",
       password: "",
       email: "",
-      firstname: "",
-      lastname: "",
+      firstName: "",
+      lastName: "",
     });
   };
 
@@ -238,21 +163,20 @@ const Auth = () => {
             )}
           </div>
           <form onSubmit={handleSubmit}>
-            {/* <label htmlFor="username">Username</label> */}
-           
-             <input
-                  type="email"
-                  id="email"
-                  name="email"
-                  placeholder="Email"
-                  value={formData.email}
-                  onChange={handleInputChange}
-                  required={!isLogin}
-                />
-   {/* Conditionally render additional fields for Signup */}
-   {!isLogin && (
+            {/* Email Field */}
+            <input
+              type="email"
+              id="email"
+              name="email"
+              placeholder="Email"
+              value={formData.email}
+              onChange={handleInputChange}
+              required={!isLogin}
+            />
+
+            {/* Conditionally render additional fields for Signup */}
+            {!isLogin && (
               <>
-                {/* <label htmlFor="email">Email</label> */}
                 <div className="name-container">
                   <input
                     type="text"
@@ -264,7 +188,6 @@ const Auth = () => {
                     required={!isLogin}
                   />
 
-                  {/* <label htmlFor="lastName">Last Name</label> */}
                   <input
                     type="text"
                     id="lastName"
@@ -276,20 +199,19 @@ const Auth = () => {
                   />
                 </div>
                 <input
-              type="text"
-              id="username"
-              name="username"
-              placeholder="Username"
-              value={formData.username}
-              onChange={handleInputChange}
-              required
-              autoFocus
-            />
-
-                {/* <label htmlFor="firstName">First Name</label> */}
+                  type="text"
+                  id="username"
+                  name="username"
+                  placeholder="Username"
+                  value={formData.username}
+                  onChange={handleInputChange}
+                  required={!isLogin}
+                  autoFocus
+                />
               </>
             )}
-            {/* <label htmlFor="password">Password</label> */}
+
+            {/* Password Field */}
             <div className="password-container">
               <input
                 type={showPassword ? "text" : "password"}
@@ -311,8 +233,7 @@ const Auth = () => {
               </button>
             </div>
 
-         
-
+            {/* Submit Button */}
             <button className="login-button" type="submit" disabled={loading}>
               {loading
                 ? isLogin
@@ -320,10 +241,11 @@ const Auth = () => {
                   : "Signing up..."
                 : isLogin
                 ? "Login"
-                : "Sign Up"}
+                : "Agree and join"}
             </button>
           </form>
-          {message && <p className="error-message">{message}</p>}
+          {/* Optional: Remove inline error message as we use toasts */}
+          {/* {message && <p className="error-message">{message}</p>} */}
         </div>
 
         {/* Accompanying Text Container */}
@@ -348,6 +270,12 @@ const Auth = () => {
           </div>
         </div>
       </div>
+      {/* Remove Modal if not used */}
+      {/* <Modal 
+        message={message}
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+      /> */}
     </div>
   );
 };

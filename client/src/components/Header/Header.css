@@ -1,11 +1,15 @@
 /* header.css */
 
-.outer-container {
+.outer_container {
   width: 100%;
-
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  position: sticky;
+  top: 0px;
+  z-index: 999;
+  background-color: #fff;
+  margin-bottom: 15px;
 }
-.inner-container {
+.inner_container {
   max-width: 1400px;
   display: flex;
   gap: 200px;
@@ -33,6 +37,7 @@
 .nav-container {
   display: flex;
   align-items: center;
+  overflow-x: none;
 }
 
 .nav-list {
@@ -44,6 +49,8 @@
   line-height: 23px;
   font-size: 15px;
   font-style: normal;
+  overflow-x: none;
+
 }
 
 .nav-list li a {
@@ -114,6 +121,11 @@
     font-weight: 700;
     font-size: 16px;
     color: rgb(85, 85, 85);
+    /* background-color: aqua; */
+    /* max-width: fit-content; */
+    /* max-width: max-content; */
+    max-width: 700px;
+
   }
 
   .nav-list {
@@ -121,10 +133,15 @@
     width: 100%;
     margin-bottom: 25px;
     margin-top: 10px;
+    /* background-color: rgb(6, 21, 21); */
+    max-width: 700px;
+
   }
 
   .nav-list li {
     width: 100%;
+    /* background-color: rgb(117, 123, 123); */
+    max-width: 700px;
   }
   .button-container {
     width: 180px;
@@ -146,5 +163,19 @@
   .logo-container img {
     height: 27px;
     margin-right: 10px;
+  }
+}
+@media (max-width: 576px){
+  .nav-container.open {
+    
+    max-width: 400px;
+
+  }
+}
+@media (min-width: 576px) and (max-width: 768px){
+  .nav-container.open {
+    
+    max-width: 500px;
+
   }
 }

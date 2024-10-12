@@ -1,28 +1,30 @@
 import React, { useState, useEffect, useContext } from "react";
-import axios from "axios";
+import axios from "../../Api/axios";
 import styles from "./AskQuestion.module.css";
-// import { AppState } from "../../context/AppState";
-// import { useNavigate } from "react-router-dom";
+import { AppState } from "../../App";
+import { Link, useNavigate } from "react-router-dom";
+import { toast } from "react-toastify"; // Import toast
 
 function AskQuestion() {
-  // const navigate = useNavigate();
-  // const { user } = useContext(AppState);
+  const navigate = useNavigate()
+  const token = localStorage.getItem("token")
+  const { user } = useContext(AppState);
   const [title, setTitle] = useState("");
   const [description, setQuestion] = useState("");
   const [error, setError] = useState("");
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const res = await axios.get("/api/questions");
-        // Handle fetched data if necessary
-      } catch (err) {
-        console.error("Error fetching data:", err);
-      }
-    };
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     try {
+  //       const res = await axios.get("/api/questions");
+  //       // Handle fetched data if necessary
+  //     } catch (err) {
+  //       console.error("Error fetching data:", err);
+  //     }
+  //   };
 
-    fetchData();
-  }, []);
+  //   fetchData();
+  // }, []);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -35,19 +37,25 @@ function AskQuestion() {
     }
 
     try {
-      await axios.post("http://localhost:5500/api/questions/askquestion", {
+      await axios.post("/questions/askquestion", {
 
-        title,
-        description,
-        questionid:111,
-        userid:11
-        // user,
+        title:title,
+        desc:description,
+        userid:user?.userid
+       
+      },{
+        headers:{
+          Authorization: 'Bearer '+token
+        }
       });
       setTitle("");
       setQuestion("");
-      alert("Question submitted successfully!");
+      // alert("Question submitted successfully!");
+      toast("Question submitted successfully!");
+      navigate("/")
     } catch (err) {
       console.error("Error submitting question:", err);
+      toast("Failed to submit question. Please try again.");
       setError("Failed to submit question. Please try again.");
     }
   };
@@ -68,7 +76,7 @@ function AskQuestion() {
       {/* Ask Public Question Section */}
       <div className={styles.askPublicQuestion}>
         <h2>Ask a Public Question</h2>
-        <a href="/">Go to Question Page</a>
+        <Link to="/">Go to Question Page</Link>
       </div>
 
       {/* Question Form */}

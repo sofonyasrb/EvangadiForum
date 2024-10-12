@@ -8,9 +8,5 @@ const dbConnection = mysql2.createPool({
 })
 
 console.log(process.env.DATABASE)
-// dbConnection.execute("select 'tset' ", (err, result) => {
-//     if(err) throw err
-//     console.log(result)
-// })
 
 module.exports = dbConnection.promise()

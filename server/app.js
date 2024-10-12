@@ -10,6 +10,12 @@ app.use(express.json());
 app.use(cors())
 // //Question routes middleware file
 
+//auth middleware
+const authMiddleware = require('./middleware/authMiddleware');  
+// app.use("/api", authMiddleware);
+
+const answerRoute = require("./routes/answerRoute");
+app.use("/api/answers",authMiddleware, answerRoute);
 
 
 //user routes middleware
@@ -17,10 +23,11 @@ const userRoute = require("./routes/userRoute");
 app.use('/api/users',userRoute)
 
 
+// //Question routes middleware
+
 const questionRoute = require("./routes/questionRoute");
 
-// //Question routes middleware
-app.use("/api/questions", questionRoute);
+app.use("/api/questions",authMiddleware, questionRoute);
 
 
 async function start() {

@@ -1,28 +1,49 @@
-import React,{useEffect, useState} from 'react';
-import classes from './HomePage.module.css'
-import QuestionsInfo from './QuestionsInfo'
-import { useNavigate } from 'react-router-dom'
-import axios from 'axios'
+import React, { useEffect, useState, useContext } from 'react';
+import classes from './HomePage.module.css';
+import QuestionsInfo from './QuestionsInfo';
+import { useNavigate } from 'react-router-dom';
+import axios from '../../Api/axios';
+import { AppState } from '../../App';
 
 
-function HomePage({ question }) {
-  const [user, setUser] = useState({});
+function HomePage() {
   const [questions, setQuestions] = useState([]);
+  const [displayedQuestions, setDisplayedQuestions] = useState(15); // Start with 15 questions
   const navigate = useNavigate();
+  const { user } = useContext(AppState);
+  const token = localStorage.getItem('token');
 
-  
-
-  // Fetch questions from the backend when the component loads
   useEffect(() => {
-    axios
-      .get("http://localhost:5000/api/questions")
-      .then((response) => setQuestions(response.data))
-      .catch((error) => console.error("Error fetching questions:", error));
+    async function getQuestions() {
+      try {
+        const response = await axios.get('/questions/getallquestions', {
+          headers: {
+            Authorization: 'Bearer ' + token,
+          },
+          ///http://localhost:5500/api/questions/getallquestions
+        });
+        setQuestions(response.data);
+      } catch (err) {
+        console.log('Error fetching questions:', err.message);
+      }
+    }
+    getQuestions();
   }, []);
-  
+
   const askQuestion = () => {
-    navigate("/askQuestion");
+    navigate('/askQuestion');
   };
+
+  // Handle showing more questions
+  const seeMore = () => {
+    setDisplayedQuestions((prevCount) => prevCount + 15); // Load next 15 questions
+  };
+
+  // Handle showing less questions
+  const seeLess = () => {
+    setDisplayedQuestions(15); // Reset to initial 15 questions
+  };
+
   return (
     <div className={classes.main_container}>
       <div className={classes.container}>
@@ -31,29 +52,38 @@ function HomePage({ question }) {
           <button onClick={askQuestion}>Ask Question</button>
         </div>
         <div>
-          <p> welcome:userName</p>
+          <p> Welcome: {user?.username} </p>
         </div>
       </div>
-      <p>Questions</p>
 
-      <hr />
-      {/* <h1>Questions</h1>
-      <ul>
-        {questions.map((question, index) => (
-          <li key={index}>
-            <p>{question}</p>
-          </li>
-        ))}
-      </ul>
+      <p className={classes.title}>Questions</p>
 
-      <hr />
-      <hr /> */}
-      <QuestionsInfo userName="ephi" questions="questions" />
-      <QuestionsInfo userName="Tina" questions="questions" />
-      <QuestionsInfo userName="zebib" questions="questions" />
-      <QuestionsInfo userName="Akili" questions="questions" />
+      {/* Display the questions */}
+      {questions.slice().reverse().slice(0, displayedQuestions).map((question, index) => (
+        <QuestionsInfo
+          key={index}
+          username={question.username}
+          title={question.title}
+          userid={question.userid}
+          questionid={question.questionid}
+        />
+      ))}
+
+      {/* See More or See Less buttons */}
+      <div className={classes.see_more_container}>
+        {displayedQuestions < questions.length && (
+          <button className={classes.see_more_button} onClick={seeMore}>
+            See More
+          </button>
+        )}
+        {displayedQuestions > 15 && (
+          <button className={classes.see_less_button} onClick={seeLess}>
+            See Less
+          </button>
+        )}
+      </div>
     </div>
   );
 }
 
-export default HomePage
+export default HomePage;

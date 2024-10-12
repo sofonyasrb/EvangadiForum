@@ -1,13 +1,15 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import styles from './QuestionAndAnswerPage.module.css';
 import { FaCircleUser } from "react-icons/fa6";
-import axios from 'axios';
+import axios from '../../Api/axios';
+import { AppState } from '../../App';
+import { toast } from 'react-toastify';
 
 const QuestionAndAnswerPage = () => {
-  console.log("QuestionAndAnswerPage rendered");
+  // console.log("QuestionAndAnswerPage rendered");
   const navigate = useNavigate();
-  const { id } = useParams(); 
+  const { questionid } = useParams();
   const [questionTitle, setQuestionTitle] = useState('');
   const [questionDescription, setQuestionDescription] = useState('');
   const [answers, setAnswers] = useState([]);
@@ -15,6 +17,11 @@ const QuestionAndAnswerPage = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
   const [data, setData] = useState({});
+  const token = localStorage.getItem("token");
+  const {user} = useContext(AppState)
+  const [displayedanswer, setDisplayedanswer] = useState(4)
+
+
 
 
   useEffect(() => {
@@ -35,36 +42,83 @@ const QuestionAndAnswerPage = () => {
     // };
 
     // fetchQuestionAndAnswers();
+// console.log("questionid ",questionid)
+async function fetchData() {
+  try {
+    // Check token and questionid
+    // console.log("Token: ", token);
+    // console.log("Question ID: ", questionid);
 
-    async function fetchData() {
+    // Make the API call
+    const response = await axios.get(`questions/questions/${questionid}`, {
+      headers: {
+        Authorization: "Bearer " + token
+      },
+    });
+
+    // Log the API response
+    // console.log("API response:", response.data);
+
+    // Access the response data (update based on the actual structure)
+    if (response?.data) {
+      setData(response?.data[0] || response.data);  // Adjust based on actual structure
+    }
+
+    setIsLoading(false);
+  } catch (err) {
+    console.error("Error details: ", err.response ? err.response : err.message);
+    setIsLoading(false);
+    setError("Failed to fetch data. Please try again.");
+  }
+}
+
+    fetchData();
+    async function fetchData1() {
       try {
-        const response = await axios.get(`http://localhost:5500/api/questions/questions/109`);
-        console.log(response?.data[0]);
-        setData(response?.data[0]);
-        setIsLoading(false);
+        const response = await axios.get(`/answers/getanswer/${questionid}`, {
+          headers: {
+            Authorization: "Bearer " + token,
+          },
+        });
+
+        // console.log(response)
+        setAnswers(response?.data);
       } catch (err) {
         console.log("Error: ", err);
-        setIsLoading(false);
-        setError("Failed to fetch data. Please try again.");
       }
     }
-    fetchData();
-  }, []);
-// console.log("data ",data)
+
+    fetchData1();
+  },[answers]);
+// console.log("answers ",answers)
+
   const submitAnswer = async (e) => {
     e.preventDefault();
     if (newAnswer.trim()) {
       try {
-        const answerData = { answer: newAnswer, username: 'YourUsername' }; // Replace with actual username
-        const response = await axios.post(`/api/questions/${id}/answers`, answerData); // Ensure the API endpoint is correct
+        // const answerData = { answer: newAnswer, username:  }; // Replace with actual username
+        const response = await axios.post(`/answers/answerQuestion`,  {
+          userid: user?.userid,
+          questionid: questionid,
+          answer: newAnswer
+        }, {
+          headers: {
+            Authorization: "Bearer " + token,
+          }
+        }); // Ensure the API endpoint is correct
         const postedAnswer = response.data;
         setAnswers((prevAnswers) => [...prevAnswers, postedAnswer]);
         setNewAnswer('');
+        toast("Answer submitted successfully!");
       } catch (error) {
         setError('Failed to post the answer. Please try again.');
       }
     }
   };
+  const handleAnswerClick = (answer) => {
+    setDisplayedanswer((answer) => answer+4);
+  };
+  // console.log(displayedanswer)
 
   return (
     <div className={styles['qa-page']}>
@@ -78,7 +132,7 @@ const QuestionAndAnswerPage = () => {
           <p className={styles['error']}>{error}</p>
         ) : (
           <>
-            <h1 className={styles['question-title']}>{data && data?.title}</h1>
+            <h2 className={styles['question-title']}>{data && data?.title} ?</h2>
             <p className={styles['question-description']}>{data && data?.description}</p>
           </>
         )}
@@ -88,22 +142,35 @@ const QuestionAndAnswerPage = () => {
       <section className={styles['community-answers']}>
         <h2 className={styles['section-title']}>Answers From The Community</h2>
         {answers && answers.length > 0 ? (
-          answers.map((answer, index) => (
+          answers.slice(0, displayedanswer)?.map((answer, index) => (
             <div key={index} className={styles['answer']}>
               <div className={styles['answer-header']}>
                 <div className={styles['icon-and-name']}>
+                
                   <FaCircleUser className={styles['answer-icon']} size={50} />
                   <span className={styles['username']}>{answer.username}</span>
                 </div>
                 <div className={styles['answer-body']}>
-                  <p>{answer.body}</p>
+                  <p>{answer.answer}</p>
                 </div>
               </div>
             </div>
           ))
+          
         ) : (
           <p className={styles['no-answers']}>No answers yet. Be the first to answer!</p>
         )}
+        {
+          
+          displayedanswer < answers?.length && (
+            <button className={styles['show-more-button']} onClick={handleAnswerClick}>Show More</button>
+          )
+        }
+        {
+          displayedanswer >= answers?.length && (
+            <p className={styles['no-answers']}>No more answers</p>
+          )
+        }
       </section>
 
       {/* Post Answer Section */}
@@ -112,7 +179,7 @@ const QuestionAndAnswerPage = () => {
           <h2 className={styles['section-title']}>Answer The Top Question</h2>
         </div>
         <div className={styles['center-button-container']}>
-          <button className={styles['go-to-question-button']} onClick={() => navigate('/questions')}>
+          <button className={styles['go-to-question-button']} onClick={() => navigate('/')}>
             Go to Question Page
           </button>
         </div>

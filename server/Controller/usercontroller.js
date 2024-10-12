@@ -6,50 +6,42 @@ const { StatusCodes } = require("http-status-codes");
 const jwt = require("jsonwebtoken");
 
 // login user
-async function login(req, res) {
-  const { email, password } = req.body;
-  if (!email || !password) {
-    return res
-      .status(StatusCodes.BAD_REQUEST)
-      .json({ message: "Please enter all required fields" });
+async function login(req,res){
+  const {email,password} = req.body
+  if(!email || !password){
+      return res.status(StatusCodes.BAD_REQUEST).json({msg:"please provide all fields"})
+}
+  try{
+      const [user] = await dbConnection.query("select username,userid,password from users where email = ?",[email])
+      // return res.json({user:user[0]})
+      if (user.length == 0){
+          return res.status(StatusCodes.BAD_REQUEST).json({msg:"please signup first "})
+      }
+      //compare password 
+      const isMatch = await bcrypt.compare(password,user[0].password)
+      if(!isMatch){
+          return res.status(StatusCodes.BAD_REQUEST).json({msg:"invalid credentials"})
+      }
+      // return res.status(StatusCodes.OK).json({msg:"login success"})
+      // return res.json({user})
+      const username = user[0].username
+      const userid = user[0].userid
+      const token =jwt.sign({username,userid},process.env.JWT_SECRET,{expiresIn:"1h"})
+
+      return res.status(StatusCodes.OK).json({msg:"login success",token,username,userid})
+
   }
-  try {
-    const [user] = await dbConnection.query(
-      "Select username,user_id,password from users where  email=? ",
-      [email]
-    );
-    if (user.length == 0) {
-      return res
-        .status(StatusCodes.BAD_REQUEST)
-        .json({ message: "invalid credential" });
-    }
 
-    //compare password
-    const isMatch = await bcrypt.compare(password, user[0].password);
-    if (!isMatch) {
-      return res
-        .Status(StatusCodes.BAD_REQUEST)
-        .json({ message: "invalid credential " });
-    }
+  catch(err){ 
+      console.log(err.message)
+      return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({msg:"server error"})
+}
 
-    const username = user[0].username;
-    const userid = user[0].userid;
-
-    const token = jwt.sign({ username, userid }, "secret", { expiresIn: "1d" });
-    return res
-      .status(StatusCodes.OK)
-      .json({ message: "user login successfully", token });
-  } catch (error) {
-    console.log(error.message);
-    return res
-      .status(StatusCodes.INTERNAL_SERVER_ERROR)
-      .json({ Message: "Something went wrong,try again later!" });
-  }
 }
 //  check user
 async function checkUser(req, res) {
   const username = req.user.username;
-  const userid = req.user.user_id;
+  const userid = req.user.userid;
   res.status(StatusCodes.OK).json({ message: "valid user", username, userid });
 }
 
