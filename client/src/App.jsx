@@ -1,13 +1,13 @@
 import React, { createContext, useEffect, useState } from "react";
-import AskQuestion from "./components/AskQuestion/AskQuestion";
+import AskQuestion from "./pages/AskQuestion/AskQuestion";
 import { BrowserRouter, Route, Routes, useNavigate } from "react-router-dom";
-import Home from "./pages/Home";
+// import Home from "./pages/Home";
 import QuestionAndAnswerPage from "./pages/QuestionAndAnswerPage/QuestionAndAnswerPage";
-import Login from "./components/Login/Login";
-import HomePage from "./components/HomePage/HomePage";
+import Login from "./pages/Login/Login";
+import HomePage from "./pages/HomePage/HomePage";
 import axios from "./Api/axios";
 import Four04 from "./components/Four04/Four04";
-import ProtectedRoute from "./components/PtotectedRoute/ProtectedRoute";
+import ProtectedRoute from "./components/ProtectedRoute/ProtectedRoute";
 import HowItWorks from "./pages/HowItWorks/HowItWorks";
 import { ToastContainer } from "react-toastify"; // Import ToastContainer
 import "react-toastify/dist/ReactToastify.css"; // Import Toastify CSS
@@ -51,14 +51,12 @@ function App() {
       navigate("/login");
     }
   }
-
   useEffect(() => {
     if (token) {
       checkUser();
     }
   });
   // console.log(user)
-
   return (
     <AppState.Provider value={{ user, setUser, handleLogout }}>
       <Routes>

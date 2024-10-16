@@ -8,7 +8,7 @@ import { AppState } from '../../App';
 
 function HomePage() {
   const [questions, setQuestions] = useState([]);
-  const [displayedQuestions, setDisplayedQuestions] = useState(15); // Start with 15 questions
+  const [displayedQuestions, setDisplayedQuestions] = useState(10); // Start with 15 questions
   const navigate = useNavigate();
   const { user } = useContext(AppState);
   const token = localStorage.getItem('token');
@@ -36,12 +36,12 @@ function HomePage() {
 
   // Handle showing more questions
   const seeMore = () => {
-    setDisplayedQuestions((prevCount) => prevCount + 15); // Load next 15 questions
+    setDisplayedQuestions((prevCount) => prevCount + 10); // Load next 15 questions
   };
 
   // Handle showing less questions
   const seeLess = () => {
-    setDisplayedQuestions(15); // Reset to initial 15 questions
+    setDisplayedQuestions(10); // Reset to initial 15 questions
   };
 
   return (

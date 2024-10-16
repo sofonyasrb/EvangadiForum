@@ -23,8 +23,6 @@ router.get("/check",authMiddleware, checkUser)
 // Controller
 async function register(req, res) {
   const { username, firstname, lastname, email, password } = req.body;
-  // console.log(req.body)
-  // Ensure all fields are provided
   if (!email || !password || !firstname || !lastname || !username) {
     console.log("here")
     return res.status(400).json({ message: 'All fields are required' });
@@ -67,5 +65,4 @@ async function register(req, res) {
 
 // Export the router and controller functions
 module.exports = router;
-// module.exports = { register }; // Combine exports
 

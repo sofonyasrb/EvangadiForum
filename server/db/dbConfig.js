@@ -2,11 +2,11 @@ const mysql2 = require("mysql2")
 const dbConnection = mysql2.createPool({
     user: process.env.USER,
     database: process.env.DATABASE,
-    host: "localhost",
+    host: process.env.HOST,
     password: process.env.PASSWORD,
-    connectionLimit:10,
+    connectionLimit: process.env.CONNECTION_LIMIT,
 })
 
-console.log(process.env.DATABASE)
+// console.log(process.env.DATABASE)
 
 module.exports = dbConnection.promise()

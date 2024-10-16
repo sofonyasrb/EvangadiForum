@@ -4,9 +4,7 @@ const app = express();
 const port = 5500;
 const dbConnection = require("./db/dbConfig");
 const cors = require('cors')
-// Middleware to parse JSON bodies
 app.use(express.json());
-// app.use(express.urlencoded({ extended: true }));
 app.use(cors())
 // //Question routes middleware file
 
@@ -40,5 +38,4 @@ async function start() {
     console.log(error.message);
   }
 }
-//calling start function
 start()

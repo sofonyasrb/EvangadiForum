@@ -10,8 +10,6 @@ const QuestionAndAnswerPage = () => {
   // console.log("QuestionAndAnswerPage rendered");
   const navigate = useNavigate();
   const { questionid } = useParams();
-  const [questionTitle, setQuestionTitle] = useState('');
-  const [questionDescription, setQuestionDescription] = useState('');
   const [answers, setAnswers] = useState([]);
   const [newAnswer, setNewAnswer] = useState('');
   const [isLoading, setIsLoading] = useState(true);
@@ -25,41 +23,15 @@ const QuestionAndAnswerPage = () => {
 
 
   useEffect(() => {
-    // const fetchQuestionAndAnswers = async () => {
-    //   try {
-    //     console.log('Fetching question and answers...');
-    //     const response = await axios.get(`http://localhost:5500/api/questions/${109}`); // Ensure the API endpoint is correct
-    //     console.log("here",response.data);
-    //     setQuestionTitle(response.data.question.title);
-    //     setQuestionDescription(response.data.question.description);
-    //     setAnswers(response.data.answers);
-    //     setIsLoading(false);
-    //   } catch (error) {
-    //     console.error('Error fetching data:', error);
-    //     setError('Failed to fetch data. Please try again.');
-    //     setIsLoading(false);
-    //   }
-    // };
-
-    // fetchQuestionAndAnswers();
-// console.log("questionid ",questionid)
 async function fetchData() {
   try {
-    // Check token and questionid
-    // console.log("Token: ", token);
-    // console.log("Question ID: ", questionid);
-
-    // Make the API call
     const response = await axios.get(`questions/questions/${questionid}`, {
       headers: {
         Authorization: "Bearer " + token
       },
     });
 
-    // Log the API response
-    // console.log("API response:", response.data);
-
-    // Access the response data (update based on the actual structure)
+    
     if (response?.data) {
       setData(response?.data[0] || response.data);  // Adjust based on actual structure
     }

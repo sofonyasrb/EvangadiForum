@@ -23,9 +23,11 @@ const Auth = () => {
   const { setUser } = useContext(AppState); // Access setUser if needed
 
   // RegEx Patterns
+
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; // Email should follow basic format
-  const passwordRegex = /^.{8,}$/; // At least 8 characters
+  const passwordRegex = /^.{8,}$/; // At least 8 characters 
   const usernameRegex = /^[a-zA-Z0-9_-]{3,20}$/; // 3-20 characters long, only letters, numbers, underscore, and hyphen
+
 
   // Handle input changes for all form fields
   const handleInputChange = (e) => {
@@ -270,12 +272,7 @@ const Auth = () => {
           </div>
         </div>
       </div>
-      {/* Remove Modal if not used */}
-      {/* <Modal 
-        message={message}
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-      /> */}
+     
     </div>
   );
 };
