@@ -9,7 +9,7 @@ app.use(cors())
 // //Question routes middleware file
 
 //auth middleware
-const authMiddleware = require('./middleware/authMiddleware');  
+const authMiddleware = require('./middleWare/authMiddleWare');  
 // app.use("/api", authMiddleware);
 
 const answerRoute = require("./routes/answerRoute");
