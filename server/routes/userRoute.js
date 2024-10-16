@@ -6,7 +6,7 @@ const dbConnection = require("../db/dbConfig");
 const bcrypt = require('bcrypt');
 const { StatusCodes } = require('http-status-codes');
 const {login, checkUser} = require('../controller/usercontroller');
-const authMiddleware = require('../middleware/authMiddleware');  
+const authMiddleware = require('../middleWare/authMiddleWare');  
 
 
 // Register route
