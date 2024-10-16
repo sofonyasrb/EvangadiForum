@@ -5,7 +5,7 @@ const dbConnection = require("../db/dbConfig")
 const {
     postAnswer,
     answerForQuestion,
-} = require('../controller/answerController');
+} = require('../Controller/answerController');
 
 //answer route
 router.post('/answerQuestion', postAnswer);
