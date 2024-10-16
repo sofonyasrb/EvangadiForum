@@ -7,7 +7,7 @@ import { useNavigate } from "react-router-dom";
 import { AppState } from "../../App"; // Assuming you have a context for auth state
 import { toast } from "react-toastify"; // Import toast
 
-const Auth = () => {
+const Login = () => {
   const [isLogin, setIsLogin] = useState(true); // Tracks current form (Login or Signup)
   const [formData, setFormData] = useState({
     username: "",
@@ -25,9 +25,8 @@ const Auth = () => {
   // RegEx Patterns
 
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; // Email should follow basic format
-  const passwordRegex = /^.{8,}$/; // At least 8 characters 
+  const passwordRegex = /^.{8,}$/; // At least 8 characters
   const usernameRegex = /^[a-zA-Z0-9_-]{3,20}$/; // 3-20 characters long, only letters, numbers, underscore, and hyphen
-
 
   // Handle input changes for all form fields
   const handleInputChange = (e) => {
@@ -119,7 +118,11 @@ const Auth = () => {
       }
     } catch (error) {
       console.error(error);
-      if (error.response && error.response.data && error.response.data.message) {
+      if (
+        error.response &&
+        error.response.data &&
+        error.response.data.message
+      ) {
         toast.error(error.response.data.message);
       } else {
         toast.error("An error occurred. Please try again.");
@@ -272,9 +275,8 @@ const Auth = () => {
           </div>
         </div>
       </div>
-     
     </div>
   );
 };
 
-export default Auth;
+export default Login;
